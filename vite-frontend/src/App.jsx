@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { WelcomeLayout } from './Layouts/WelcomeLayout';
 import { AuthLayout } from './Layouts/AuthLayout';
 import { DashboardLayout } from './Layouts/DashboardLayout';
+import { Transaction } from './components/Transaction/Transaction';
 
 function App() {
   const token = useSelector((state) => state.tokenReducer.token);
@@ -21,6 +22,7 @@ function App() {
   return (
     <>
     <WelcomeLayout/>
+    {/* <Transaction/> */}
       {/* <Routes>
         <Route path="/" element={<WelcomeLayout />} />
       

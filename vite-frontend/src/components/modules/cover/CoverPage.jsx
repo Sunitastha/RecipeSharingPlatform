@@ -1,24 +1,29 @@
-import React from 'react';
-import { Button } from '@mantine/core';
-import { Link, useNavigate } from 'react-router-dom';
-import cover2 from '../../../assets/images/coverpage.jpg';
-import { BackgroundImage, Center, Stack, Title, Text } from '@mantine/core';
+import React from "react";
+import { Button } from "@mantine/core";
+import { Link, useNavigate } from "react-router-dom";
+import cover2 from "../../../assets/images/coverpage.jpg";
+import { BackgroundImage, Center, Stack, Title, Text } from "@mantine/core";
 
 export const CoverPage = () => {
   const navigate = useNavigate();
 
   return (
-    <BackgroundImage src={cover2} style={{ height: '100vh' }}>
-      <Center style={{ height: '100%' }}>
+    <BackgroundImage src={cover2} style={{ height: "100vh" }}>
+      <Center style={{ height: "100%" }}>
         <Stack align="center">
-          <Title order={1} style={{ color: 'black' }}>
+          <Title order={1} style={{ color: "black" }}>
             Cooking Connections
           </Title>
-          <Title order={3} style={{ color: 'black' }}>
+          <Title order={3} style={{ color: "black" }}>
             Discover. Create. Share.
           </Title>
-          <Text size="xl" align="center" style={{ color: 'black', marginBottom: '2rem' }}>
-            Join our culinary community to explore recipes, unleash creativity, and share the joy of cooking.
+          <Text
+            size="xl"
+            align="center"
+            style={{ color: "black", marginBottom: "2rem" }}
+          >
+            Join our culinary community to explore recipes, unleash creativity,
+            and share the joy of cooking.
           </Text>
           <div>
             <Button
@@ -26,7 +31,7 @@ export const CoverPage = () => {
               to="sign-in"
               variant="filled"
               color="#E70000"
-              style={{ marginRight: '2rem' }}
+              style={{ marginRight: "2rem" }}
             >
               Sign In
             </Button>
@@ -44,4 +49,3 @@ export const CoverPage = () => {
     </BackgroundImage>
   );
 };
-
