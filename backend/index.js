@@ -83,7 +83,7 @@ app.listen(port, async () => {
   console.log(`App is running on port ${port}`);
   try {
     await mongoose.connect(
-      "mongodb+srv://admin:admin@cluster0.fhlt7iy.mongodb.net/RecipeRealm?retryWrites=true&w=majority&appName=Cluster0",
+      "mongodb://admin:admin@ac-dkhylrs-shard-00-00.fhlt7iy.mongodb.net:27017,ac-dkhylrs-shard-00-01.fhlt7iy.mongodb.net:27017,ac-dkhylrs-shard-00-02.fhlt7iy.mongodb.net:27017/RecipeRealm?ssl=true&replicaSet=atlas-s7oeol-shard-0&authSource=admin&appName=Cluster0",
       {
         // useNewUrlParser: true,
         // useUnifiedTopology: true,

@@ -2,6 +2,7 @@ import { BackgroundImage } from "@mantine/core";
 import { NavbarMantine } from "../../components/partials/navbar/NavbarMantine";
 import { GetRecipes } from "../../components/modules/recipe/GetRecipes";
 import { FooterLinks } from "../../components/partials/footer/FooterLinks";
+import { LocalRecipes } from "../../components/modules/recipe/LocalRecipes";
 
 export const ShowRecipes = () => {
   return (
@@ -10,7 +11,8 @@ export const ShowRecipes = () => {
         <NavbarMantine />
       </div>
       <div className="flex flex-col mt-4">
-        <GetRecipes />
+        {/* <GetRecipes /> */}
+        <LocalRecipes/>
         <FooterLinks />
       </div>
     </div>

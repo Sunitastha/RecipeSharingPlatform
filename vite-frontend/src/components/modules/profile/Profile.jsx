@@ -1,7 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar, Card, Collapse, Title, Image } from "@mantine/core";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Paper,
+  Text,
+  Title,
+  Image,
+  Group,
+  Stack,
+  Divider,
+} from "@mantine/core";
+import {
+  IconMail,
+  IconPhone,
+  IconUser,
+  IconLock,
+  IconChefHat,
+  IconArrowRight,
+} from "@tabler/icons-react";
 import AppLoader from "../../partials/AppLoader";
 
 export const Profile = () => {
@@ -12,7 +32,16 @@ export const Profile = () => {
   const navigate = useNavigate();
 
   const capitalizeTitle = (title) =>
-    title.replace(/\b\w/g, (char) => char.toUpperCase());
+    title ? title.replace(/\b\w/g, (char) => char.toUpperCase()) : "";
+
+  const getInitials = (fullName) => {
+    if (!fullName) return "U";
+    return fullName
+      .split(" ")
+      .map((part) => part.charAt(0).toUpperCase())
+      .join("")
+      .slice(0, 2);
+  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -25,11 +54,10 @@ export const Profile = () => {
           const response = await axios.get(
             `http://localhost:8083/Recipe/getRecipesByUserId/${userData._id}`
           );
-          console.log("Recipe response:", response.data);
-          setRecipes(response.data.data);
+          setRecipes(response.data.data || []);
         } catch (err) {
           console.error("Error fetching recipes:", err);
-          setError("Error fetching recipes");
+          setError("Failed to load your recipes.");
         } finally {
           setLoading(false);
         }
@@ -43,7 +71,7 @@ export const Profile = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen justify-center items-center">
+      <div className="flex h-screen justify-center items-center bg-gray-50">
         <AppLoader />
       </div>
     );
@@ -51,318 +79,207 @@ export const Profile = () => {
 
   if (error) {
     return (
-      <div className="flex h-screen justify-center items-center">{error}</div>
+      <div className="flex h-screen justify-center items-center bg-gray-50 text-red-600 font-medium">
+        {error}
+      </div>
     );
   }
 
-  const getInitials = (fullName) => {
-    if (!fullName) return "";
-    const nameParts = fullName.split(" ");
-    const initials = nameParts
-      .map((part) => part.charAt(0).toUpperCase())
-      .join("");
-    return initials;
-  };
   return (
-    // <div className="bg-white p-6 rounded-lg shadow-lg text-left">
-    //   <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
-    //     <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-8 border border-gray-200">
-    //       <h1 className="text-3xl font-bold text-gray-900 text-center mb-6">
-    //         Profile
-    //       </h1>
-
-    //       {userDetails && (
-    //         <div key={userDetails._id} className="flex flex-col items-center">
-    //           <Avatar
-    //             color="green"
-    //             radius="xl"
-    //             size={90}
-    //             className="cursor-pointer shadow-md mb-5 hover:scale-105 transition-transform"
-    //           >
-    //             {getInitials(userDetails.fullName)}
-    //           </Avatar>
-
-    //           <div className="w-full space-y-3">
-    //             <div className="flex justify-between bg-gray-50 p-3 rounded-lg">
-    //               <span className="text-gray-500 font-medium">Username:</span>
-    //               <span className="font-semibold text-gray-900">
-    //                 {userDetails.username}
-    //               </span>
-    //             </div>
-
-    //             <div className="flex justify-between bg-gray-50 p-3 rounded-lg">
-    //               <span className="text-gray-500 font-medium">Full Name:</span>
-    //               <span className="font-semibold text-gray-900">
-    //                 {userDetails.fullName}
-    //               </span>
-    //             </div>
-
-    //             <div className="flex justify-between bg-gray-50 p-3 rounded-lg">
-    //               <span className="text-gray-500 font-medium">Gender:</span>
-    //               <span className="font-semibold text-gray-900">
-    //                 {userDetails.gender}
-    //               </span>
-    //             </div>
-
-    //             <div className="flex justify-between bg-gray-50 p-3 rounded-lg">
-    //               <span className="text-gray-500 font-medium">Phone:</span>
-    //               <span className="font-semibold text-gray-900">
-    //                 {userDetails.phone}
-    //               </span>
-    //             </div>
-
-    //             <div className="flex justify-between bg-gray-50 p-3 rounded-lg">
-    //               <span className="text-gray-500 font-medium">Email:</span>
-    //               <span className="font-semibold text-gray-900">
-    //                 {userDetails.email}
-    //               </span>
-    //             </div>
-    //           </div>
-    //         </div>
-    //       )}
-
-    //       <div className="flex justify-center mt-8">
-    //         <Link
-    //           to="/change-password"
-    //           className="px-5 py-2 rounded-lg bg-green-600 text-white font-semibold shadow hover:bg-green-700 transition"
-    //         >
-    //           Change Password
-    //         </Link>
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   <hr className="my-6 border-gray-300" />
-    //   <h2 className="text-2xl font-bold mb-2 flex justify-center text-gray-600">
-    //     My Recipes:
-    //   </h2>
-    //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    //     {recipes.length > 0 ? (
-    //       recipes.map((recipe, index) => (
-    //         <div
-    //           key={recipe._id}
-    //           shadow="lg"
-    //           padding="lg"
-    //           radius="md"
-    //           className="cursor-pointer transition hover:shadow-2xl shadow-sm rounded-md border border-gray-200 p-2"
-    //           onClick={() => navigate(`/recipes/${recipe._id}`)}
-    //         >
-    //           <Image
-    //             src={
-    //               recipe.image.startsWith("http")
-    //                 ? recipe.image
-    //                 : `http://localhost:8083/file/${recipe.image}`
-    //             }
-    //             fit="cover"
-    //             radius="md"
-    //             className="w-[100px] h-[400px] object-cover hover:scale-[1.02]"
-    //           />
-    //           <div className="flex flex-col justify-between">
-    //             <Title
-    //               order={2}
-    //               className="mt-3 text-xl font-semibold text-gray-600 "
-    //             >
-    //               {capitalizeTitle(recipe.title)}
-    //             </Title>
-
-    //             <div className="flex items-center mt-2 space-x-2">
-    //               {/* Bookmark Icon */}
-    //               {/* <BookmarkIcon
-    //                           className="text-gray-500 hover:text-red-500 cursor-pointer transition"
-    //                           size={20}
-    //                         /> */}
-
-    //               {/* USER ICON + USERNAME */}
-    //               {/* <div className="flex items-center space-x-1">
-    //                           <UserIcon size={18} className="text-gray-500" />
-    //                           <span className="text-gray-600 text-sm">
-    //                             {recipe.createdBy?.fullName || "Unknown"}
-    //                           </span>
-    //                         </div> */}
-    //             </div>
-    //           </div>
-    //         </div>
-    //       ))
-    //     ) : (
-    //       <p>No recipes found.</p>
-    //     )}
-    //   </div>
-    // </div>
-    <div className="flex flex-col bg-gray-100 min-h-screen py-12 px-6">
-      {/* MAIN CARD */}
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10">
-        {/* LEFT: PROFILE */}
-        <div className="flex-shrink-0 flex flex-col items-center lg:items-start gap-4 w-full lg:w-1/3  p-8   bg-white rounded-3xl shadow-md border border-gray-200">
-          <Avatar color="green" radius="xl" size={120} className="shadow-md">
+    <div className="flex flex-col bg-gray-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8 mt-10">
+      <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
+        
+        {/* LEFT COLUMN: PROFILE CARD */}
+        <Paper
+          radius="md"
+          p="xl"
+          withBorder
+          className="w-full lg:w-1/3 bg-white shadow-sm border-gray-200 flex flex-col items-center h-fit"
+        >
+          {/* Avatar & Header */}
+          <Avatar
+            color="red"
+            radius="xl"
+            size={110}
+            className="shadow-md font-bold text-2xl border-4 border-red-50"
+          >
             {getInitials(userDetails.fullName)}
           </Avatar>
 
-          <p className="text-xl font-semibold text-gray-800">
-            {userDetails.fullName}
-          </p>
-          <p className="text-gray-500">{userDetails.username}</p>
+          <Title order={2} className="text-xl font-bold text-gray-900 mt-4 text-center">
+            {userDetails.fullName || "User Profile"}
+          </Title>
+          <Text size="sm" c="dimmed" className="mb-4">
+            @{userDetails.username || "username"}
+          </Text>
 
-          {/* INFO GRID */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 w-full">
-            {[
-              ["Gender", userDetails.gender],
-              ["Phone", userDetails.phone],
-              ["Email", userDetails.email],
-            ].map(([label, value], i) => (
-              <div
-                key={i}
-                className="bg-gray-50 rounded-xl p-3 border border-gray-200 shadow-sm"
-              >
-                <p className="text-gray-500 text-sm font-medium">{label}</p>
-                <p className="text-gray-900 font-semibold mt-1">{value}</p>
-              </div>
-            ))}
-          </div>
+          <Badge color="red" variant="light" radius="xl" size="sm" mb="lg">
+            Recipe Creator
+          </Badge>
 
-          <Link
+          <Divider className="w-full my-2" />
+
+          {/* User Meta Information Grid */}
+          <Stack gap="xs" className="w-full mt-4">
+            <Paper p="xs" radius="md" bg="gray.0" className="border border-gray-100">
+              <Group gap="xs">
+                <IconUser size={18} className="text-red-500" />
+                <Box>
+                  <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+                    Gender
+                  </Text>
+                  <Text size="sm" fw={600} className="text-gray-800 capitalize">
+                    {userDetails.gender || "Not specified"}
+                  </Text>
+                </Box>
+              </Group>
+            </Paper>
+
+            <Paper p="xs" radius="md" bg="gray.0" className="border border-gray-100">
+              <Group gap="xs">
+                <IconPhone size={18} className="text-red-500" />
+                <Box>
+                  <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+                    Phone
+                  </Text>
+                  <Text size="sm" fw={600} className="text-gray-800">
+                    {userDetails.phone || "N/A"}
+                  </Text>
+                </Box>
+              </Group>
+            </Paper>
+
+            <Paper p="xs" radius="md" bg="gray.0" className="border border-gray-100">
+              <Group gap="xs">
+                <IconMail size={18} className="text-red-500" />
+                <Box className="overflow-hidden">
+                  <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+                    Email
+                  </Text>
+                  <Text size="sm" fw={600} className="text-gray-800 truncate">
+                    {userDetails.email || "N/A"}
+                  </Text>
+                </Box>
+              </Group>
+            </Paper>
+          </Stack>
+
+          {/* Action Button */}
+          <Button
+            component={Link}
             to="/change-password"
-            className="mt-6 px-5 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 shadow-md transition"
+            color="red"
+            variant="light"
+            fullWidth
+            radius="md"
+            mt="xl"
+            leftSection={<IconLock size={16} />}
+            className="font-semibold"
           >
             Change Password
-          </Link>
-        </div>
+          </Button>
+        </Paper>
 
-        {/* RIGHT: MY RECIPES */}
-        <div className="flex-1 bg-white rounded-3xl shadow-md border border-gray-200  p-8 lg:p-12">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center lg:text-left">
-            My Recipes
-          </h2>
+        {/* RIGHT COLUMN: USER'S RECIPES */}
+        <Paper
+          radius="md"
+          p={{ base: "md", sm: "xl" }}
+          withBorder
+          className="flex-1 bg-white shadow-sm border-gray-200"
+        >
+          <Group justify="space-between" align="center" mb="xl">
+            <Group gap="xs">
+              <IconChefHat size={28} className="text-red-600" />
+              <Title order={2} className="text-2xl font-extrabold text-gray-900">
+                My Recipes
+              </Title>
+            </Group>
+            <Badge color="gray" variant="subtle" size="lg" radius="xl">
+              {recipes.length} {recipes.length === 1 ? "Recipe" : "Recipes"}
+            </Badge>
+          </Group>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-            {recipes.length > 0 ? (
-              recipes.map((recipe) => (
-                <div
-                  key={recipe._id}
-                  className="bg-gray-50 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden"
-                  onClick={() => navigate(`/recipes/${recipe._id}`)}
-                >
-                  <img
-                    src={
-                      recipe.image.startsWith("http")
-                        ? recipe.image
-                        : `http://localhost:8083/file/${recipe.image}`
-                    }
-                    className="w-full h-40 object-cover rounded-t-2xl"
-                    alt={recipe.title}
-                  />
+          {/* Recipe Grid */}
+          {recipes.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {recipes.map((recipe) => {
+                const imageUrl = recipe.image?.startsWith("http")
+                  ? recipe.image
+                  : `http://localhost:8083/file/${recipe.image}`;
 
-                  <div className="p-3">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      {capitalizeTitle(recipe.title)}
-                    </h3>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-600 text-center">No recipes found.</p>
-            )}
-          </div>
-        </div>
+                return (
+                  <Paper
+                    key={recipe._id}
+                    radius="lg"
+                    withBorder
+                    className="overflow-hidden shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group bg-white border-gray-200 flex flex-col justify-between"
+                    onClick={() => navigate(`/recipe/${recipe._id}`)}
+                  >
+                    <div>
+                      {/* Recipe Image Banner */}
+                      <div className="relative h-44 overflow-hidden">
+                        <Image
+                          src={imageUrl}
+                          alt={recipe.title}
+                          fallbackSrc="https://placehold.co/600x400?text=Recipe+Image"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+                        <Badge
+                          color="red"
+                          variant="filled"
+                          size="xs"
+                          radius="xl"
+                          className="absolute top-3 left-3 shadow-sm font-bold uppercase"
+                        >
+                          My Creation
+                        </Badge>
+                      </div>
+
+                      {/* Content */}
+                      <Box p="md">
+                        <Title
+                          order={3}
+                          className="text-gray-900 text-base font-bold line-clamp-1 group-hover:text-red-600 transition-colors"
+                        >
+                          {capitalizeTitle(recipe.title)}
+                        </Title>
+                        {recipe.ingredients && (
+                          <Text size="xs" c="dimmed" className="line-clamp-2 mt-1">
+                            {recipe.ingredients}
+                          </Text>
+                        )}
+                      </Box>
+                    </div>
+
+                    {/* Footer link */}
+                    <Box px="md" pb="md" pt="0">
+                      <Divider my="xs" color="gray.1" />
+                      <Group justify="space-between" align="center">
+                        <Text size="xs" fw={600} color="red" className="flex items-center gap-1">
+                          View Details <IconArrowRight size={14} />
+                        </Text>
+                      </Group>
+                    </Box>
+                  </Paper>
+                );
+              })}
+            </div>
+          ) : (
+            <Paper p="xl" radius="lg" bg="gray.0" className="flex text-center justify-center border border-dashed border-gray-300 my-8">
+              <IconChefHat size={48} className="mx-auto text-gray-400 mb-2" />
+              <Text fw={600} className="text-gray-700">
+                No recipes posted yet
+                
+                <p className="text-gray-400">Share your delicious culinary creations with the community!</p>
+              </Text>
+              
+            </Paper>
+          )}
+        </Paper>
+
       </div>
     </div>
-
-    // <div className="flex flex-col">
-    //   {/* PROFILE CARD */}
-    //   <div className="max-w-4xl mx-auto px-6 py-10">
-    //     <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-10 tracking-wide">
-    //       Profile
-    //     </h1>
-
-    //     {userDetails && (
-    //       <div className="flex flex-col items-center">
-    //         <Avatar
-    //           color="green"
-    //           radius="xl"
-    //           size={110}
-    //           className="cursor-pointer shadow-xl mb-6 hover:scale-110 transition-transform duration-300"
-    //         >
-    //           {getInitials(userDetails.fullName)}
-    //         </Avatar>
-
-    //         {/* INFO BOXES */}
-    //         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mt-4">
-    //           {[
-    //             ["Username", userDetails.username],
-    //             ["Full Name", userDetails.fullName],
-    //             ["Gender", userDetails.gender],
-    //             ["Phone", userDetails.phone],
-    //             ["Email", userDetails.email],
-    //           ].map(([label, value], i) => (
-    //             <div
-    //               key={i}
-    //               className="flex flex-col p-5 rounded-2xl bg-white shadow-md border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-    //             >
-    //               <span className="text-sm text-gray-500 font-medium">
-    //                 {label}
-    //               </span>
-    //               <span className="mt-1 text-lg font-semibold text-gray-900">
-    //                 {value}
-    //               </span>
-    //             </div>
-    //           ))}
-    //         </div>
-    //       </div>
-    //     )}
-
-    //     <div className="flex justify-center mt-10">
-    //       <Link
-    //         to="/change-password"
-    //         className="px-6 py-3 rounded-xl bg-green-600 text-white font-semibold text-lg shadow-md hover:bg-green-700 hover:shadow-lg transition-all duration-300"
-    //       >
-    //         Change Password
-    //       </Link>
-    //     </div>
-    //   </div>
-
-    //   {/* DIVIDER */}
-    //   <div className="max-w-6xl mx-auto">
-    //     <hr className="my-10 border-gray-300" />
-
-    //     <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">
-    //       My Recipes
-    //     </h2>
-
-    //     {/* RECIPES GRID */}
-    //     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    //       {recipes.length > 0 ? (
-    //         recipes.map((recipe) => (
-    //           <div
-    //             key={recipe._id}
-    //             className="bg-white rounded-xl border border-gray-200 shadow hover:shadow-2xl transition cursor-pointer overflow-hidden"
-    //             onClick={() => navigate(`/recipes/${recipe._id}`)}
-    //           >
-    //             <img
-    //               src={
-    //                 recipe.image.startsWith("http")
-    //                   ? recipe.image
-    //                   : `http://localhost:8083/file/${recipe.image}`
-    //               }
-    //               className="w-full h-64 object-cover hover:scale-105 transition-transform"
-    //               alt={recipe.title}
-    //             />
-
-    //             <div className="p-4">
-    //               <h3 className="text-xl font-semibold text-gray-800">
-    //                 {capitalizeTitle(recipe.title)}
-    //               </h3>
-
-    //               {/* <p className="text-sm text-gray-500 mt-1">
-    //                 By {recipe.createdBy?.fullName || "Unknown"}
-    //               </p> */}
-    //             </div>
-    //           </div>
-    //         ))
-    //       ) : (
-    //         <p className="text-gray-600">No recipes found.</p>
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

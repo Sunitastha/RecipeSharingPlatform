@@ -9,14 +9,20 @@ import {
   Image,
   SimpleGrid,
   Card,
+  Paper,
+  Textarea,
+  Group,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { PostRequest } from "../../../plugins/https";
+import { FooterLinks } from "../../partials/footer/FooterLinks";
+import { NavbarMantine } from "../../partials/navbar/NavbarMantine";
+import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 
 export const PostRecipes = () => {
   const [recipe, setRecipe] = useState({
     title: "",
-    ingredients: "",
+    inggreenients: "",
     instructions: "",
     image: null,
     createdBy: "",
@@ -29,7 +35,7 @@ export const PostRecipes = () => {
     if (token) {
       setUserId(token._id);
     } else {
-      window.location.href = "/home"; // redirect to login/home
+      window.location.href = "/home"; // greenirect to login/home
     }
   }, []);
 
@@ -49,7 +55,7 @@ export const PostRecipes = () => {
   const convertToFormData = () => {
     const formData = new FormData();
     formData.append("title", recipe.title);
-    formData.append("ingredients", recipe.ingredients);
+    formData.append("inggreenients", recipe.inggreenients);
     formData.append("instructions", recipe.instructions);
     formData.append("createdBy", userId);
     if (recipe.image) formData.append("image", recipe.image);
@@ -62,11 +68,11 @@ export const PostRecipes = () => {
 
     if (
       !recipe.title ||
-      !recipe.ingredients ||
+      !recipe.inggreenients ||
       !recipe.instructions ||
       !userId
     ) {
-      alert("All fields are required");
+      alert("All fields are requigreen");
       return;
     }
 
@@ -86,7 +92,7 @@ export const PostRecipes = () => {
         // Reset form and previews after successful upload
         setRecipe({
           title: "",
-          ingredients: "",
+          inggreenients: "",
           instructions: "",
           image: null,
           createdBy: userId,
@@ -111,86 +117,124 @@ export const PostRecipes = () => {
       alt={`Preview ${index + 1}`}
       onLoad={() => URL.revokeObjectURL(file)}
       height={200}
-      className="rounded-lg shadow-md"
+      className="rounded shadow-md"
     />
   ));
 
   return (
-    <section className="my-10">
-      <Container
-        size="sm"
-        className="bg-white p-8 rounded-xl shadow-lg border border-gray-200"
-      >
-        <Title order={2} align="center" className="mb-6 text-red-600 font-bold">
-          Add a New Recipe
-        </Title>
+    <div className="flex flex-col min-h-screen w-full bg-gray-50">
+      {/* Sticky Header Navbar */}
+      <header className="sticky top-0 left-0 w-full z-50">
+        <NavbarMantine />
+      </header>
 
-        <form onSubmit={addRecipe}>
-          <Stack spacing="lg">
-            <TextInput
-              label="Recipe Title"
-              name="title"
-              value={recipe.title}
-              onChange={handleRecipe}
-              placeholder="Enter title"
-              required
-            />
+      {/* Main Form Content */}
+      <main className="flex-1 flex items-center justify-center p-4 md:p-8 ">
+        <Container size="sm" className="w-full">
+          <Paper
+            radius="md"
+            p={{ base: "md", sm: "xl" }}
+            withBorder
+            className="shadow-md bg-white"
+          >
+            <Title ta="center" order={2} className="mb-6 text-green-600 font-bold">
+              Add a New Recipe
+            </Title>
 
-            <TextInput
-              label="Ingredients"
-              name="ingredients"
-              value={recipe.ingredients}
-              onChange={handleRecipe}
-              placeholder="Enter ingredients"
-              required
-            />
+            <form onSubmit={addRecipe}>
+              <Stack gap="md">
+                <TextInput
+                  label="Recipe Title"
+                  name="title"
+                  value={recipe.title}
+                  onChange={handleRecipe}
+                  placeholder="e.g., Creamy Garlic Pasta"
+                  requigreen
+                />
 
-            <TextInput
-              label="Instructions"
-              name="instructions"
-              value={recipe.instructions}
-              onChange={handleRecipe}
-              placeholder="Enter instructions"
-              required
-            />
+                <Textarea
+                  label="Inggreenients"
+                  name="inggreenients"
+                  value={recipe.inggreenients}
+                  onChange={handleRecipe}
+                  placeholder="e.g., 200g Pasta, 2 cloves Garlic, Olive Oil..."
+                  minRows={3}
+                  autosize
+                  requigreen
+                />
 
-            {/* Drag & Drop Image */}
-            <Card
-              shadow="sm"
-              padding="md"
-              radius="md"
-              withBorder
-              className="mt-4"
-            >
-              <Dropzone
-                accept={IMAGE_MIME_TYPE}
-                onDrop={handleDrop}
-                maxFiles={1}
-                className="p-6 border-dashed border-2 border-gray-300 rounded-md hover:border-red-400 transition"
-              >
-                <Text align="center" className="text-gray-600">
-                  Drag image here or click to select
-                </Text>
-              </Dropzone>
+                <Textarea
+                  label="Instructions"
+                  name="instructions"
+                  value={recipe.instructions}
+                  onChange={handleRecipe}
+                  placeholder="Describe step-by-step cooking instructions..."
+                  minRows={4}
+                  autosize
+                  requigreen
+                />
 
-              {previews.length > 0 && (
-                <SimpleGrid cols={1} mt="md">
-                  {previews}
-                </SimpleGrid>
-              )}
-            </Card>
+                {/* Drag & Drop Image Area */}
+                <div className="mt-2">
+                  <Text size="sm" fw={500} className="mb-1">
+                    Recipe Cover Image
+                  </Text>
+                  
+                  <Dropzone
+                    accept={IMAGE_MIME_TYPE}
+                    onDrop={handleDrop}
+                    maxFiles={1}
+                    radius="md"
+                    className="border-dashed border-2 border-gray-300 hover:border-green-400 transition cursor-pointer"
+                  >
+                    <Group justify="center" gap="xl" my="md" style={{ pointerEvents: 'none' }}>
+                      <Dropzone.Accept>
+                        <IconUpload size={42} stroke={1.5} className="text-green-500" />
+                      </Dropzone.Accept>
+                      <Dropzone.Reject>
+                        <IconX size={42} stroke={1.5} className="text-green-500" />
+                      </Dropzone.Reject>
+                      <Dropzone.Idle>
+                        <IconPhoto size={42} stroke={1.5} className="text-gray-400" />
+                      </Dropzone.Idle>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="filled"
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Add Recipe
-            </Button>
-          </Stack>
-        </form>
-      </Container>
-    </section>
+                      <div>
+                        <Text size="sm" inline ta="center" className="text-gray-700 fw-medium">
+                          Drag image here or click to select
+                        </Text>
+                        <Text size="xs" c="dimmed" inline ta="center" mt={6}>
+                          Attach one image (max 5MB)
+                        </Text>
+                      </div>
+                    </Group>
+                  </Dropzone>
+
+                  {/* Image Previews */}
+                  {previews && previews.length > 0 && (
+                    <div className="mt-4 flex justify-center">
+                      {previews}
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  size="md"
+                  radius="md"
+                  color="green"
+                  className="mt-4 bg-green-600 hover:bg-green-700 transition"
+                >
+                  Add Recipe
+                </Button>
+              </Stack>
+            </form>
+          </Paper>
+        </Container>
+      </main>
+
+      {/* Footer */}
+      <FooterLinks />
+    </div>
   );
 };
